@@ -17,6 +17,9 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
 
+    # Relationship with Review model
+    reviews = db.relationship('Review', back_populates='customer')
+
     def __repr__(self):
         return f'<Customer {self.id}, {self.name}>'
 
@@ -28,5 +31,24 @@ class Item(db.Model):
     name = db.Column(db.String)
     price = db.Column(db.Float)
 
+    # Relationship with Review model
+    reviews = db.relationship('Review', back_populates='item')
+
     def __repr__(self):
         return f'<Item {self.id}, {self.name}, {self.price}>'
+
+
+class Review(db.Model):
+    __tablename__ = 'reviews'
+
+    id = db.Column(db.Integer,  primary_key=True)
+    comment = db.Column(db.String)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'))
+    item_id = db.Column(db.Integer, db.ForeignKey('items.id'))
+    # Relationship with Customer model
+    customer = db.relationship('Customer', back_populates='reviews')
+    # Relationship with Item model
+    item = db.relationship('Item', back_populates='reviews')
+
+    def __repr__(self):
+        return f'<Review {self.id}, {self.comment}, {self.customer_id}, {self.item_id}, {self.customer.name}, {self.item.name}'
